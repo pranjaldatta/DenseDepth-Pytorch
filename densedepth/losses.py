@@ -77,3 +77,35 @@ def ssim(img1, img2, val_range, window_size=11, window=None, size_average=True, 
 
 
 
+def image_gradients(img):
+
+    """works like tf one"""
+    if len(img.shape) != 4:
+        raise ValueError("Shape mismatch. Needs to be 4 dim tensor")
+    print(img)
+    img_shape = img.shape
+    batch_size, channels, height, width = img.shape
+  
+    dy = img[:, :, 1:, :] - img[:, :, :-1, :]
+    dx = img[:, :, :, 1:] - img[:, :, :, :-1]
+
+    shape = np.stack([batch_size, channels, 1, width])
+    dy = torch.cat([dy, torch.zeros([batch_size, channels, 1, width], dtype=img.dtype)], dim=2)
+    dy = dy.view(img_shape)
+
+    shape = np.stack([batch_size, channels, height, 1])
+    dx = torch.cat([dx, torch.zeros([batch_size, channels, height, 1], dtype=img.dtype)], dim=3)
+    dx = dx.view(img_shape)
+
+    return dy, dx
+
+
+# Now we define the actual depth loss function
+def depth_loss(y_true, y_pred, theta=0.1, maxDepth=1000.0/10.0):
+    
+    # Edges 
+    dy_true, dx_true = image_gradients(y_true)
+    dy_pred, dx_pred = image_gradients(y_pred)
+    l_edges = torch.mean(torch.abs(dy_pred - dy_true) + torch.abs(dx_pred - dx_true), dim=1)
+
+    return l_edges
