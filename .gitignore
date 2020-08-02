@@ -1,2 +1,5 @@
 .vscode
 densedepth/weights/
+densedepth/data/
+weights/
+data/
