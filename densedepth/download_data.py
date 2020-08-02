@@ -14,11 +14,11 @@ def main(name="nyu-depth"):
         else: 
 
             url = 'https://drive.google.com/uc?id={}'.format(ids[name])
-            gdown.download(url, quiet=False)
+            gdown.download(url, output="data/nyu_depth.zip", quiet=False)
     else:
         os.mkdir("data/")
         url = 'https://drive.google.com/uc?id={}'.format(ids[name])
-        gdown.download(url, quiet=False)
+        gdown.download(url, output="data/nyu_depth.zip", quiet=False)
 
 if __name__ == "__main__":
     main()
