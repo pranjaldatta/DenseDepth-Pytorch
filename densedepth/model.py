@@ -5,16 +5,15 @@ import torchvision.models as models
 
 class Encoder(nn.Module):
 
-    def __init__(self):
+    def __init__(self, encoder_pretrained=True):
         super(Encoder, self).__init__() 
-        self.densenet = models.densenet161(pretrained=False)
+        self.densenet = models.densenet161(pretrained=encoder_pretrained)
     
     def forward(self, x):
         
         feature_maps = [x]
 
         for key, value in self.densenet.features._modules.items():
-            print(key)
             feature_maps.append(value(feature_maps[-1]))
         
         return feature_maps
@@ -81,11 +80,11 @@ class Decoder(nn.Module):
 
 class DenseDepth(nn.Module):
 
-    def __init__(self):
+    def __init__(self, encoder_pretrained=True):
 
         super(DenseDepth, self).__init__()
 
-        self.encoder = Encoder()
+        self.encoder = Encoder(encoder_pretrained=encoder_pretrained)
         self.decoder = Decoder()
     
     def forward(self, x):
