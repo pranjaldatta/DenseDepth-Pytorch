@@ -28,13 +28,13 @@ class Upsample(nn.Module):
         self.output_channels = output_channels
 
         self.convA = nn.Conv2d(input_channels, output_channels, 3, 1, 1)
-        self.leakyrelu = nn.LeakyReLU(0.2)
+        self.leakyrelu = nn.LeakyReLU(0.2, inplace=True)
         self.convB = nn.Conv2d(output_channels, output_channels, 3, 1, 1)
 
     def forward(self, x, concat_with):
 
-        concat_h_dim = concat_with[2]
-        concat_w_dim = concat_with[3]
+        concat_h_dim = concat_with.shape[2]
+        concat_w_dim = concat_with.shape[3]
 
         upsampled_x = F.interpolate(x, size=[concat_h_dim, concat_w_dim], mode="bilinear", align_corners=True)
         upsampled_x = torch.cat([upsampled_x, concat_with], dim=1)
@@ -55,6 +55,8 @@ class Decoder(nn.Module):
 
         features = int(num_features * decoder_width)
 
+        self.conv2 = nn.Conv2d(num_features, features, 1, 1, 1)
+
         self.upsample1 = Upsample(features//scales[0] + 384, features//(scales[0] * 2))
         self.upsample2 = Upsample(features//scales[1] + 192, features//(scales[1] * 2))
         self.upsample3 = Upsample(features//scales[2] + 96, features//(scales[2] * 2))
@@ -66,9 +68,9 @@ class Decoder(nn.Module):
 
         x_block0= features[3]
         x_block1 = features[4]
-        x_block2 = features[5]
-        x_block3 = features[6]
-        x_block4 = features[7]
+        x_block2 = features[6]
+        x_block3 = features[8]
+        x_block4 = features[11]
 
         x0 = self.conv2(x_block4)
         x1 = self.upsample1(x0, x_block3)

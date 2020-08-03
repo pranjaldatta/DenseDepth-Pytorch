@@ -45,8 +45,8 @@ class RandomChannelSwap(object):
 
         image, depth = sample["image"], sample["depth"]
         
-        if not _check_pil(img):
-            raise TypeError("Expected PIL type. Got {}".format(type(img)))
+        if not _check_pil(image):
+            raise TypeError("Expected PIL type. Got {}".format(type(image)))
         if not _check_pil(depth):
             raise TypeError("Expected PIL type. Got {}".format(type(depth)))
         
@@ -110,7 +110,7 @@ class ToTensor(object):
         return {'image': image, 'depth': depth}
 
     def to_tensor(self, pic):
-        if not(_is_pil_image(pic) or _is_numpy_image(pic)):
+        if not(_check_pil(pic) or _check_np_img(pic)):
             raise TypeError(
                 'pic should be PIL Image or ndarray. Got {}'.format(type(pic)))
 
