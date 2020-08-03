@@ -2,6 +2,8 @@ import numpy as  np
 import matplotlib
 import matplotlib.cm as cm
 
+import torch
+
 def DepthNorm(depth, max_depth=1000.0):
     return max_depth / depth
 
@@ -40,3 +42,12 @@ def colorize(value, vmin=10, vmax=1000, cmap="plasma"):
     img = value[:,:,:3]
 
     return img.transpose((2, 0, 1))
+
+def load_from_checkpoint(ckpt, model, optimizer, epochs, loss_meter=None):
+
+    checkpoint = torch.load(ckpt)
+    ckpt_epoch = epochs - ckpt["epoch"]
+    model.load_state_dict(checkpoint["model_state_dict"])
+    optimizer.load_state_dict(checkpoint["optim_state_dict"])
+    
+    return model, optimizer, ckpt_epoch
