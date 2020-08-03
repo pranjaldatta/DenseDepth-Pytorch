@@ -148,7 +148,7 @@ def main():
             torch.save({
                 "epoch": epoch, 
                 "model_state_dict": model.cpu().state_dict(),
-                "optim_state_dict":  optimizer.cpu().state_dict(),
+                "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
             }, "ckpt_tmp.pth") 
 
@@ -157,7 +157,7 @@ def main():
             torch.save({
                 "epoch": epoch, 
                 "model_state_dict": model.cpu().state_dict(),
-                "optim_state_dict":  optimizer.cpu().state_dict(),
+                "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
             }, "ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100)))
 
