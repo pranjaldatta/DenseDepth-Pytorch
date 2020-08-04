@@ -176,7 +176,7 @@ def LogProgress(model, writer, test_loader, epoch, device):
     sample_batched = next(iter(sequential))
     
     image = torch.Tensor(sample_batched["image"]).to(device)
-    depth = torch.Tensor(sample_batched["depth"]).to(device
+    depth = torch.Tensor(sample_batched["depth"]).to(device)
     
     if epoch == 0:
         writer.add_image("Train.1.Image", vision_utils.make_grid(image.data, nrow=6, normalize=True), epoch)
