@@ -1,6 +1,7 @@
 import time  
 import argparse as arg 
 import datetime
+import os
 
 import torch  
 import torch.nn as nn  
@@ -30,8 +31,15 @@ def main():
     parser.add_argument("--enc_pretrain", "-p", default=True, type=bool, help="Use pretrained encoder")
     parser.add_argument("--data", default="data/nyu_data.zip", type=str, help="path to dataset")
     parser.add_argument("--theta", "-t", default=0.1, type=float, help="coeff for L1 (depth) Loss")
+    parser.add_argument("--save", "-s", default="", type=str, help="location to save checkpoints in")
 
     args = parser.parse_args()
+
+    # Some sanity checks
+    if len(args.save) > 0 and not args.save.endswith("/"):
+        raise ValueError("save location should be path to directory or empty. (Must end with /")
+    if len(args.save) > 0 and not os.path.isdir(args.save):
+        raise NotADirectoryError("{} not a dir path".format(args.save))
 
     # Load data
     print("Loading Data ...")
@@ -75,6 +83,9 @@ def main():
     model.train() 
     for epoch in range(args.epochs):
 
+        if model.device():
+            model = model.to(device)
+
         batch_time = AverageMeter() 
         loss_meter = AverageMeter() 
 
@@ -86,7 +97,7 @@ def main():
             optimizer.zero_grad() 
 
             image_x = torch.Tensor(batch["image"]).to(device)
-            depth_y = torch.Tensor(batch["depth"]).to(device=device, non_blocking=True)
+            depth_y = torch.Tensor(batch["depth"]).to(device=device)
 
             normalized_depth_y = DepthNorm(depth_y)
 
@@ -150,7 +161,9 @@ def main():
                 "model_state_dict": model.cpu().state_dict(),
                 "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
-            }, "ckpt_tmp.pth") 
+            }, args.save+"ckpt_tmp.pth") 
+
+            model = model.to(device)
 
         if epoch == ((args.epochs % 5) + save_count) :
 
@@ -159,7 +172,7 @@ def main():
                 "model_state_dict": model.cpu().state_dict(),
                 "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
-            }, "ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100)))
+            }, args.save+"ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100)))
 
             save_count = (args.epochs % 5) + save_count
 

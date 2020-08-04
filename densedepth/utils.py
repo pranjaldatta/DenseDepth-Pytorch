@@ -46,7 +46,11 @@ def colorize(value, vmin=10, vmax=1000, cmap="plasma"):
 def load_from_checkpoint(ckpt, model, optimizer, epochs, loss_meter=None):
 
     checkpoint = torch.load(ckpt)
-    ckpt_epoch = epochs - ckpt["epoch"]
+    ckpt_epoch = epochs - (ckpt["epoch"]+1)
+    if ckpt_epoch <= 0:
+        raise ValueError("Epochs provided: {}, epochs completed in ckpt: {}".format(
+    epochs, ckpt["epoch"]+1))
+    
     model.load_state_dict(checkpoint["model_state_dict"])
     optimizer.load_state_dict(checkpoint["optim_state_dict"])
     
