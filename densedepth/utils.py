@@ -76,7 +76,7 @@ def init_or_load_model(depthmodel, enc_pretrain, epochs, lr, ckpt=None, device=t
     
     start_epoch = 0
     if ckpt is not None:
-        start_epoch = epochs - (checkpoint["epoch"]+1)
+        start_epoch = checkpoint["epoch"]+1
         if start_epoch <= 0:
             raise ValueError("Epochs provided: {}, epochs completed in ckpt: {}".format(
                         epochs, checkpoint["epoch"]+1))

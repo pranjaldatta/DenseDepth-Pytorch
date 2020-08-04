@@ -160,11 +160,11 @@ def main():
         
         if epoch % 1 == 0:
             print(
-                "----------------------------------\t",
-                "Epoch: #{}, Avg. Net Loss: {4f}\t",
+                "----------------------------------\n",
+                "Epoch: #{0}, Avg. Net Loss: {avg_loss:.4f}\n",
                 "----------------------------------"
                 .format(
-                    epoch, loss_meter.avg
+                    epoch, avg_loss=loss_meter.avg
                 )
             )
             torch.save({
