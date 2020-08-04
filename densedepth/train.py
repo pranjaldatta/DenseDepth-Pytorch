@@ -60,7 +60,7 @@ def main():
 
     # loading from checkpoint if provided 
     if len(args.checkpoint) > 0:
-        print("Loading from checokpoint ...")
+        print("Loading from checkpoint ...")
         
         model, optimizer, start_epoch = init_or_load_model(depthmodel=DenseDepth,
                                             enc_pretrain=args.enc_pretrain,
