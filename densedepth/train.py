@@ -172,7 +172,7 @@ def main():
                 "model_state_dict": model.cpu().state_dict(),
                 "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
-            }, args.save+"ckpt_tmp.pth") 
+            }, args.save+"ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100))) 
 
             model = model.to(device)
 
