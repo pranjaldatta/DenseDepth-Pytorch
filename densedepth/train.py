@@ -14,7 +14,7 @@ from model import DenseDepth
 from losses import ssim as ssim_criterion
 from losses import depth_loss as gradient_criterion
 from data import getTrainingTestingData
-from utils import AverageMeter, DepthNorm, colorize, load_from_checkpoint
+from utils import AverageMeter, DepthNorm, colorize, load_from_checkpoint, init_or_load_model
 
 
 def main():
@@ -44,20 +44,14 @@ def main():
     # Load data
     print("Loading Data ...")
     trainloader, testloader = getTrainingTestingData(args.data, batch_size=args.batch)
-    print("Datalaoders ready ...")
+    print("Dataloaders ready ...")
     num_trainloader = len(trainloader)
     num_testloader = len(testloader)
 
-    # initialize the model with pretrained ImageNet weights    
-    print("Model init ...")
-    model = DenseDepth(encoder_pretrained=args.enc_pretrain)
-    print("Model initialized ...")
-
     # Training utils  
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
     batch_size = args.batch
     model_prefix = "densedepth_"
-    device = args.device
+    device = torch.device("cuda:0" if args.device == "cuda" else "cpu")
     theta = args.theta
     save_count = 0
     epoch_loss = []
@@ -66,10 +60,28 @@ def main():
 
     # loading from checkpoint if provided 
     if len(args.checkpoint) > 0:
-        model, optimizer, args.epochs = load_from_checkpoint(args.checkpoint, model, optimizer, args.epochs)
+        print("Loading from checokpoint ...")
+        
+        model, optimizer, start_epoch = init_or_load_model(depthmodel=DenseDepth,
+                                            enc_pretrain=args.enc_pretrain,
+                                            epochs=args.epochs,
+                                            lr=args.lr,
+                                            ckpt=args.checkpoint, 
+                                            device=device                                            
+                                            )
+        print("Resuming from: epoch #{}".format(start_epoch))
 
-    model = model.to(device)
+    else:
+        print("Initializing fresh model ...")
 
+        model, optimizer, start_epoch = init_or_load_model(depthmodel=DenseDepth, enc_pretrain=args.enc_pretrain,
+                                    epochs=args.epochs,
+                                    lr=args.lr,
+                                    ckpt=None, 
+                                    device=device                                            
+                                    )
+
+    
     # Logging
     writer = SummaryWriter(comment="{}-learning_rate:{}-epoch:{}-batch_size:{}".format(
         model_prefix, args.lr, args.epochs, args.batch
@@ -81,10 +93,9 @@ def main():
     # Starting training 
     print("Starting training ... ")
     model.train() 
-    for epoch in range(args.epochs):
+    for epoch in range(start_epoch, args.epochs):
 
-        if model.device():
-            model = model.to(device)
+        model = model.to(device)
 
         batch_time = AverageMeter() 
         loss_meter = AverageMeter() 
@@ -165,7 +176,7 @@ def main():
 
             model = model.to(device)
 
-        if epoch == ((args.epochs % 5) + save_count) :
+        if epoch % 5 == 0 :
 
             torch.save({
                 "epoch": epoch, 
@@ -174,7 +185,7 @@ def main():
                 "loss": loss_meter.avg
             }, args.save+"ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100)))
 
-            save_count = (args.epochs % 5) + save_count
+            #save_count = (args.epochs % 5) + save_count
 
 
 
