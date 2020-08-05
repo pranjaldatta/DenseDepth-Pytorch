@@ -91,11 +91,13 @@ def main():
     l1_criterion = nn.L1Loss()
 
     # Starting training 
+    print("Device: ", device)
     print("Starting training ... ")
-    model.train() 
+     
     for epoch in range(start_epoch, args.epochs):
-
-        model = model.to(device)
+        
+        model.train()
+        #model = model.to(device)
 
         batch_time = AverageMeter() 
         loss_meter = AverageMeter() 
@@ -156,12 +158,12 @@ def main():
             del depth_y
             del preds          
            #print(torch.cuda.memory_allocated()/1e+9)
-        #LogProgress(model, writer, testloader, num_iters, device)
+        
         
         if epoch % 1 == 0:
             print(
-                "----------------------------------\n",
-                "Epoch: #{0}, Avg. Net Loss: {avg_loss:.4f}\n",
+                "----------------------------------\n"
+                "Epoch: #{0}, Avg. Net Loss: {avg_loss:.4f}\n"
                 "----------------------------------"
                 .format(
                     epoch, avg_loss=loss_meter.avg
@@ -169,12 +171,13 @@ def main():
             )
             torch.save({
                 "epoch": epoch, 
-                "model_state_dict": model.cpu().state_dict(),
+                "model_state_dict": model.state_dict(),
                 "optim_state_dict":  optimizer.state_dict(),
                 "loss": loss_meter.avg
             }, args.save+"ckpt_{}_{}.pth".format(epoch, int(loss_meter.avg*100))) 
 
-            model = model.to(device)
+            #model = model.to(device)
+            LogProgress(model, writer, testloader, num_iters, device)
 
         if epoch % 5 == 0 :
 
