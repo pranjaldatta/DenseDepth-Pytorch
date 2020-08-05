@@ -28,7 +28,7 @@ class Upsample(nn.Module):
         self.output_channels = output_channels
 
         self.convA = nn.Conv2d(input_channels, output_channels, 3, 1, 1)
-        self.leakyrelu = nn.LeakyReLU(0.2, inplace=True)
+        self.leakyrelu = nn.LeakyReLU(0.2)
         self.convB = nn.Conv2d(output_channels, output_channels, 3, 1, 1)
 
     def forward(self, x, concat_with):
