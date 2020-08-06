@@ -97,7 +97,7 @@ def main():
     for epoch in range(start_epoch, args.epochs):
         
         model.train()
-        #model = model.to(device)
+        model = model.to(device)
 
         batch_time = AverageMeter() 
         loss_meter = AverageMeter() 
