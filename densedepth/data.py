@@ -164,4 +164,9 @@ def getTrainingTestingData(path, batch_size):
     return DataLoader(transformed_training, batch_size, shuffle=True), DataLoader(transformed_testing, batch_size, shuffle=False)
    
 
-    
+
+def load_testloader(path, batch_size=1):
+
+    data, nyu2_train = loadZipToMem(path)
+    transformed_testing = depthDatasetMemory(data, nyu2_train, transform=getNoTransform())
+    return DataLoader(transformed_testing, batch_size, shuffle=False)
