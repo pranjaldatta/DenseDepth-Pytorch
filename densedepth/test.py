@@ -20,26 +20,13 @@ def main():
 
     parser = arg.ArgumentParser(description="Test the model that has been trained")
     parser.add_argument("--checkpoint", "-c", type=str, help="path to checkpoint")
-    parser.add_argument("--savedir", "-s", type=str, default="", help="save location of the test images")
     parser.add_argument("--device", "-d", type=str, default="cuda")
     parser.add_argument("--data", type=str, default="examples/", help="Path to dataset zip file")
 
     args = parser.parse_args()
 
     if len(args.checkpoint) and not os.path.isfile(args.checkpoint):
-        raise FileNotFoundError("{} no such file".format(args.checkpoint))
-    if args.batch != 1:
-        raise ValueError("{} batch_size is not valid. Batch_size 1 is allowed".format(args.batch))
-    
-    # make image, depth, preds dirs
-    if len(args.savedir) > 0  and not os.path.isdir(args.savedir):
-        raise NotADirectoryError("{} not a directory".format(args.savedir))
-    
-    try:
-        os.mkdir(args.savedir + "images/")
-        os.mkdir(args.savedir + "preds/")
-    except FileExistsError:
-        pass
+        raise FileNotFoundError("{} no such file".format(args.checkpoint))    
 
     device = torch.device("cuda" if args.device == "cuda" else "cpu")
     print("Using device: {}".format(device))
@@ -63,7 +50,7 @@ def main():
     
     for idx, img_name in enumerate(img_list):
 
-        img = load_images(img_name)     
+        img = load_images([img_name])     
         img = torch.Tensor(img).float().to(device)   
         print("Processing {}, Tensor Shape: {}".format(img_name, img.shape))
 
@@ -74,7 +61,7 @@ def main():
         output = output.transpose((1, 2, 0))
         cv2.imwrite(img_name.split(".")[0]+"_result.png", output)
 
-        print("Processing {} done. ".format(img_name))
+        print("Processing {} done.".format(img_name))
 
 
 

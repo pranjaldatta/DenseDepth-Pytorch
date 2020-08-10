@@ -1,6 +1,7 @@
 import numpy as  np   
 import matplotlib
 import matplotlib.cm as cm
+from PIL import Image
 
 import torch
 
