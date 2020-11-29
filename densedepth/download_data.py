@@ -2,7 +2,7 @@ import os
 import gdown   
 
 ids = {
-    "nyu-depth":"1wve5K8lFpOFuFWFr-CC4FdW_ssG9oVA3"
+    "nyu-depth":"1fdFu5NGXe4rTLYKD5wOqk9dl-eJOefXo"
 }
 
 
