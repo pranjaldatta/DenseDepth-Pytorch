@@ -3,3 +3,7 @@ densedepth/weights/
 densedepth/data/
 weights/
 data/
+*.pth
+__pycache__/*
+*.pyc  
+*.pyo

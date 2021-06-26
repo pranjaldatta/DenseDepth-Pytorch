@@ -72,10 +72,10 @@ python densedepth/train.py --help
 
 | Image | Prediction |
 ------|-----------|
-| <img src="examples/626_image.png" height=240 width=320></img>|<img src="examples/626_image_result.png" height=240 width=320>|
-| <img src="examples/470_image.png" height=240 width=320></img>|<img src="examples/470_image_result.png" height=240 width=320>|
-| <img src="examples/11_image.png" height=240 width=320></img>|<img src="examples/11_image_result.png" height=240 width=320>|
-| <img src="examples/358_image.png" height=240 width=320></img>|<img src="examples/358_image_result.png" height=240 width=320>|
-| <img src="examples/312_image.png" height=240 width=320></img>|<img src="examples/312_image_result.png" height=240 width=320>|
+| <img src="examples/raw/626_image.png" height=240 width=320></img>|<img src="examples/626_image_result.png" height=240 width=320>|
+| <img src="examples/raw/470_image.png" height=240 width=320></img>|<img src="examples/470_image_result.png" height=240 width=320>|
+| <img src="examples/raw/11_image.png" height=240 width=320></img>|<img src="examples/11_image_result.png" height=240 width=320>|
+| <img src="examples/raw/358_image.png" height=240 width=320></img>|<img src="examples/358_image_result.png" height=240 width=320>|
+| <img src="examples/raw/312_image.png" height=240 width=320></img>|<img src="examples/312_image_result.png" height=240 width=320>|
 
 For more examples, check [here.](https://github.com/pranjaldatta/DenseDepth-Pytorch/tree/master/examples)
